@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Protected Area</title>
+</head>
+<body>
+    <script>
+        // Change "mskcardiac" to whatever password you want
+        var password = prompt("Please enter the password to access this site:");
+        
+        if (password === "mskcardiac") {
+            // If correct, redirect to your actual secret page
+            window.location.href = "dashboard.html"; 
+        } else {
+            alert("Incorrect password!");
+            window.location.href = "https://nuc.med"; // Send them back to main site
+        }
+    </script>
+</body>
+</html>
