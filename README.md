@@ -1,50 +1,71 @@
-# Myotrace — Nuclear Cardiology Tool
+# Myotrace — demonstration site
 
-A single-file browser tool for reading and reporting cardiac PET/CT myocardial perfusion studies:
-a structured worksheet, a certified report generator, and a read-out narrative written in the order
-the images are shown.
+Myotrace on a web page: a sign-in screen, your work saved to this repository, and a reset to
+the default demonstration at any time. It runs on GitHub Pages; there is no other server.
 
-**Live:** https://johnsolomon.github.io/cardio/
+**Simulated patients only.** This is a demonstration. Never enter real patient information.
 
-## What it does
+## What is in this folder
 
-- **Worksheet** — patient, indications, stress protocol, 17-segment polar maps, gated function,
-  absolute flow, coronary calcium, correlative studies.
-- **Report** — generated from the worksheet by a certified generator held to 64 golden-master cases;
-  every sentence is derived from an entered value.
-- **Read-out narrative** — the study described the way it is presented at read-out: non-AC images
-  first with stress and rest, then AC, defects called out by grade, region and the projection that
-  shows them best.
-- **Import (optional)** — paste an Epic note or a 4DM XML export to pre-fill the worksheet. Every
-  imported value is marked and can be overwritten. Nothing has to be imported; the worksheet can be
-  typed.
+| File | What it is |
+|---|---|
+| `index.html` | The app |
+| `myotrace-site.json` | The site's settings: the account (stored only as a check value, never the password) and, after the first sign-in, the GitHub key, stored only encrypted |
+| `data/default-workspace.json.gz` | The default demonstration: 250 simulated practice patients and one example patient. **Reset** restores it |
+| `.nojekyll` | Tells GitHub Pages to serve the files as they are |
 
-## Privacy
+After the first save, the app adds `data/workspace.enc` (your saved work, encrypted with your
+password) and, after a reset, `data/workspace-before-reset.enc` (the work from before it).
 
-**This page is entirely self-contained and makes no network requests.** There is no server, no
-analytics, and no external script, style or font — verified: zero external references, zero
-`fetch`/`XMLHttpRequest` calls in the shipped file. Anything entered stays in the browser tab.
+## Put it online (about 10 minutes)
 
-"Save" writes the current study to that browser's `localStorage` so it survives a reload. It is
-readable by anyone with access to that browser profile. On a shared or public workstation, use
-**Reset study** when finished, or don't use Save.
+1. **Make a repository.** On GitHub: **+ › New repository**. Name it, for example, `myotrace`.
+   Choose **Public** (GitHub Pages is free for public repositories). Create it.
+2. **Upload the files.** In the new repository: **Add file › Upload files**. Drag in everything
+   from this folder, including the `data` folder. On a Mac, `.nojekyll` is hidden: press
+   **Cmd+Shift+.** in Finder to show it (the site works without it, but include it if you can).
+   Click **Commit changes**.
+3. **Turn on GitHub Pages.** **Settings › Pages**. Under *Build and deployment*: Source
+   **Deploy from a branch**, branch **main**, folder **/ (root)**. Save. After a minute or two
+   the page shows the site's address, such as `https://yourname.github.io/myotrace/`.
+   For your own domain, enter it under **Custom domain** on the same page.
+4. **Sign in** at that address with the username and password you were given.
+5. **Connect saving (once).** The first sign-in asks for a GitHub key so the site can save to
+   this repository:
+   - On GitHub: your picture › **Settings › Developer settings › Personal access tokens ›
+     Fine-grained tokens › Generate new token**.
+   - **Repository access:** *Only select repositories* › this repository.
+   - **Permissions › Repository permissions › Contents:** *Read and write*. Nothing else.
+   - Choose an expiration, generate, copy it, and paste it into the site.
 
-## Not a medical device
+   The site checks the key, encrypts it with your password, and writes it into
+   `myotrace-site.json` in the repository. The key is never kept in the browser.
+6. **Change the password:** **More › Change password…** (at least 12 characters).
 
-This tool assists a qualified reader in composing a report. It does not interpret images, and it
-does not make or recommend a diagnosis. Every generated sentence is editable, and the reader is
-responsible for the signed report.
+## Using it
 
-## Running it
+- **Saving is automatic:** half a minute after each change. The chip at the top says
+  *Saved*, *Unsaved changes* or *Saving…*; click it to save at once. **Save** and
+  **More › Save to the server now** save too.
+- **More › Reset to the default demonstration…** puts back the default. The work from just
+  before is kept, and **More › Undo the last reset** brings it back.
+- **More › Sign out** saves first, then clears this browser's copy.
+- **When the GitHub key expires**, the chip says *Not saved*; click it and paste a new key.
 
-Download `index.html` and open it. That is the whole application — no build, no install, no network.
+## What sign-in protects, and what it does not
 
-## Development
+- Without the password, the app does not open and your saved work cannot be read: the saved
+  file is encrypted with a key made from your password (AES-256-GCM, PBKDF2-SHA-256, 310,000
+  rounds). The GitHub key is encrypted the same way.
+- The repository is public, so the app itself and the default demonstration (simulated
+  patients) can be seen by anyone who looks at the repository. Choose a long password: the
+  settings file is public, so a short password could be guessed offline.
+- One account. If two people are signed in at once, the last save wins.
+- This is not a system for real patient data: use the app on an approved, encrypted computer
+  for that, where nothing leaves the device.
 
-The source and test suite are not in this repository. The shipped file is generated from ~14 engines
-by a build step, and is validated before each release by: a 64-case golden-master certification of
-the report generator, ~20 unit suites, layout contracts at 9 viewports, a touch-behaviour suite, four
-static and runtime audits, 250 synthetic studies, 32 clinical archetypes, and semantic, interaction
-and import simulators.
+## Changing the default
 
-Built by John Solomon, Nuclear Medicine resident.
+Set things up the way you want them, then **More › Make this the default…**. Reset then
+restores that instead of the standard demonstration. (The default is stored unencrypted in
+the repository; it must hold simulated patients only.)
